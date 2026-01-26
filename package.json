@@ -1,0 +1,26 @@
+{
+  "name": "agent-skills",
+  "version": "1.0.0",
+  "description": "文档驱动的项目开发工作流技能集合",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "claude",
+    "agent",
+    "skills",
+    "workflow",
+    "ai"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zhucl1006/skills.git"
+  },
+  "bugs": {
+    "url": "https://github.com/zhucl1006/skills/issues"
+  },
+  "homepage": "https://github.com/zhucl1006/skills#readme"
+}
