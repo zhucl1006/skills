@@ -3,18 +3,47 @@ name: project-workflow
 description: |
   文档驱动的项目开发工作流。智能判断任务类型，执行已有计划或使用 feature-dev 生成新计划。
 
-  触发场景：
-  - 用户请求开发新功能或模块（自动使用 feature-dev 生成计划）
+  **使用场景：**
+  - 已有完整项目文档，需要执行开发任务
   - 用户指定执行某个计划（如"执行 plan 001"）
-  - 用户说"开始开发"、"执行计划"、"继续上次的任务"
-  - 项目包含 docs/ 和 docs/plans/ 目录结构
+  - 用户请求开发新功能（自动使用 feature-dev 生成计划）
+
+  **前置条件：**
+  - 项目应该已有 docs/ 文档结构（PRD、SAD 等）
+  - 如果是新项目，建议先使用 project-docs-setup skill 创建完整文档
+
+  **触发方式：**
+  - "执行 plan 001" / "继续 001-user-authentication"
+  - "开始开发" / "执行计划" / "继续上次的任务"
+  - "实现用户认证功能" / "添加 XXX 模块"
 ---
 
 # Project Workflow
 
 文档驱动的项目开发工作流，确保每次开发任务都有据可循、可追溯。
 
+**重要提示**：本 skill 假设项目已有完整的文档结构（docs/README.md、PRD.md、SAD.md 等）。如果是新项目或缺少文档，强烈建议先使用 **project-docs-setup** skill 创建完整文档。
+
 ## 前置要求
+
+### 项目文档
+
+本 skill 依赖完整的项目文档体系。如果项目缺少文档：
+
+**推荐做法**：
+```
+使用 project-docs-setup skill：
+  /project-docs-setup
+  或告诉我："创建项目文档"
+
+该 skill 会：
+- 通过多轮对话了解项目需求
+- 提供专业的产品和架构分析
+- 生成完整的 PRD、SAD、开发指南等文档
+```
+
+**快速模式**：
+如果只是简单测试，Phase 0 可以创建最小化目录结构，但**不包含文档内容**。
 
 ### feature-dev 插件
 
@@ -68,80 +97,75 @@ description: |
 
 ---
 
-## Phase 0: 初始化文档结构
+## Phase 0: 检查文档结构
 
-**首次使用或文档结构缺失时自动执行。**
+**在开始执行前自动检查。**
 
-### 0.1 检查文档结构
+### 0.1 检查必需的文档
 
 检查项目是否存在标准文档结构：
 
 ```bash
 # 检查必需的目录和文件
-- docs/                    # 文档根目录
-- docs/README.md           # 文档索引
+- docs/README.md           # 文档索引（必需）
 - docs/plans/              # 计划文件目录
 - docs/specs/              # 规格文档
-- docs/guides/             # 开发指南
-- docs/modules/            # 模块文档
 ```
 
-### 0.2 自动创建文档结构
+### 0.2 文档缺失处理
 
-如果检测到文档结构不完整，自动创建：
-
-```
-1. 创建目录结构：
-   mkdir -p docs/plans
-   mkdir -p docs/specs
-   mkdir -p docs/guides
-   mkdir -p docs/modules
-   mkdir -p docs/database
-   mkdir -p docs/api
-
-2. 生成 docs/README.md：
-   - 使用模板：references/docs-readme-template.md
-   - 根据项目信息自定义内容
-   - 项目名称、技术栈、模块列表等
-
-3. 创建基础文档占位符：
-   - docs/specs/PRD.md（产品需求文档）
-   - docs/specs/SAD.md（架构设计文档）
-   - docs/guides/AI-DEVELOPMENT-GUIDE.md（AI 开发指南）
-
-4. 提示用户完善文档内容
-```
-
-### 0.3 询问用户确认
-
-生成文档结构后，向用户展示：
+如果检测到文档结构不完整：
 
 ```
-已自动创建以下文档结构：
+1. 显示检测结果：
+   "检测到项目缺少文档结构"
 
-docs/
-├── README.md                   ✓ 已生成（需完善）
-├── plans/                      ✓ 已创建
-├── specs/
-│   ├── PRD.md                  ○ 占位符（待填写）
-│   └── SAD.md                  ○ 占位符（待填写）
-├── guides/
-│   └── AI-DEVELOPMENT-GUIDE.md ○ 占位符（待填写）
-├── modules/                    ✓ 已创建
-├── database/                   ✓ 已创建
-└── api/                        ✓ 已创建
+2. 提供建议：
+   "建议使用 project-docs-setup skill 创建完整的项目文档：
+   - 该 skill 会通过多轮对话了解项目需求
+   - 自动生成 PRD、SAD、开发指南等完整文档
+   - 提供最佳实践建议和架构分析
 
-建议：
-1. 完善 docs/README.md，补充项目特定信息
-2. 填写 PRD.md 和 SAD.md，描述产品需求和架构设计
-3. 根据项目需要创建模块文档
+   运行方式：
+   /project-docs-setup
+   或
+   告诉我：'创建项目文档'"
 
-是否继续执行开发任务？
+3. 询问用户选择：
+   "你希望如何处理？
+   a) 先创建完整文档（推荐）- 我可以帮你调用 project-docs-setup
+   b) 创建最小化结构继续 - 只创建空目录，无文档内容
+   c) 跳过检查继续执行 - 假设文档在其他位置"
+
+4. 根据用户选择：
+   - 选择 a：调用 project-docs-setup skill 或提示用户运行
+   - 选择 b：执行 0.3 创建最小化结构
+   - 选择 c：跳过 Phase 0，进入 Phase 1
 ```
 
-### 0.4 跳过初始化
+### 0.3 创建最小化结构（仅在用户选择时）
 
-如果文档结构已完整，跳过此阶段，直接进入 Phase 1。
+```bash
+# 只创建目录结构，不创建任何文件
+mkdir -p docs/plans
+mkdir -p docs/specs
+mkdir -p docs/guides
+mkdir -p docs/modules
+mkdir -p docs/database
+mkdir -p docs/api
+
+echo "已创建基础目录结构。"
+echo "注意：目录为空，建议后续使用 project-docs-setup 补充完整文档。"
+```
+
+### 0.4 文档已存在
+
+如果文档结构完整，显示确认信息并跳过此阶段：
+
+```
+✓ 检测到完整的文档结构
+✓ 直接进入 Phase 1
+```
 
 ---
 
