@@ -17,7 +17,7 @@ description: |
   - "为 XXX 功能编写实现计划"
 ---
 
-# Project Planning
+# 项目规划
 
 项目计划产出工具，帮助你将想法转化为可执行的开发计划。
 
@@ -47,12 +47,14 @@ description: |
 通过以下问题评估：
 
 **需求明确的标志：**
+
 - 用户清楚描述了功能边界和验收标准
 - 技术方案已确定（使用什么技术栈、库、框架）
 - 有明确的输入输出和数据流
 - 可以直接开始编写实现步骤
 
 **需求不明确的标志：**
+
 - 用户只有模糊的想法或目标
 - 不确定技术方案或有多种选择
 - 需要探索现有代码库的实现方式
@@ -90,11 +92,13 @@ else:
 ### 2.1 核心原则
 
 编写详细的实现计划，假设工程师：
+
 - 是熟练的开发者
-- 对我们的代码���和工具链几乎零了解
+- 对我们的代码逻辑和工具链几乎零了解
 - 测试设计能力一般
 
 **计划特点：**
+
 - 每个步骤是一个小动作（2-5 分钟）
 - 遵循 TDD：写测试 → 运行失败 → 实现 → 运行通过 → 提交
 - 包含完整的代码示例和命令
@@ -109,15 +113,15 @@ else:
 **必需的文档头部：**
 
 ```markdown
-# [Feature Name] Implementation Plan
+# [功能名称] 实施计划
 
-> **For Claude:** REQUIRED SUB-SKILL: Use project-workflow to implement this plan task-by-task.
+> **给 Claude：** 必需的子技能：使用 project-workflow 逐任务实施此计划。
 
-**Goal:** [一句话描述要构建什么]
+**目标：** [一句话描述要构建什么]
 
-**Architecture:** [2-3 句话描述实现方法]
+**架构：** [2-3 句话描述实现方法]
 
-**Tech Stack:** [关键技术/库]
+**技术栈：** [关键技术/库]
 
 ---
 ```
@@ -127,39 +131,40 @@ else:
 每个任务按以下结构编写：
 
 ```markdown
-### Task N: [Component Name]
+### 任务 N：[组件名称]
 
-**Files:**
-- Create: `exact/path/to/file.py`
-- Modify: `exact/path/to/existing.py:123-145`
-- Test: `tests/exact/path/to/test.py`
+**文件：**
 
-**Step 1: Write the failing test**
+- 创建：`exact/path/to/file.py`
+- 修改：`exact/path/to/existing.py:123-145`
+- 测试：`tests/exact/path/to/test.py`
+
+**步骤 1：编写失败的测试**
 
 \`\`\`python
 def test_specific_behavior():
-    result = function(input)
-    assert result == expected
+result = function(input)
+assert result == expected
 \`\`\`
 
-**Step 2: Run test to verify it fails**
+**步骤 2：运行测试验证失败**
 
-Run: `pytest tests/path/test.py::test_name -v`
-Expected: FAIL with "function not defined"
+运行：`pytest tests/path/test.py::test_name -v`
+预期：FAIL with "function not defined"
 
-**Step 3: Write minimal implementation**
+**步骤 3：编写最小实现**
 
 \`\`\`python
 def function(input):
-    return expected
+return expected
 \`\`\`
 
-**Step 4: Run test to verify it passes**
+**步骤 4：运行测试验证通过**
 
-Run: `pytest tests/path/test.py::test_name -v`
-Expected: PASS
+运行：`pytest tests/path/test.py::test_name -v`
+预期：PASS
 
-**Step 5: Commit**
+**步骤 5：提交**
 
 \`\`\`bash
 git add tests/path/test.py src/path/file.py
@@ -224,6 +229,7 @@ git commit -m "feat: add specific feature"
 通过自然的协作对话，将想法转化为完整的设计和规格说明。
 
 **关键原则：**
+
 - **一次一个问题** - 不要用多个问题压倒用户
 - **优先多选题** - 比开放式问题更容易回答
 - **YAGNI 原则** - 从所有设计中移除不必要的功能
@@ -279,16 +285,19 @@ d) 修复现有问题"
 我看到几种可能的实现方法：
 
 **方案 A：[名称]（推荐）**
+
 - 优点：[列出优点]
 - 缺点：[列出缺点]
 - 适用场景：[什么情况下最合适]
 
 **方案 B：[名称]**
+
 - 优点：[列出优点]
 - 缺点：[列出缺点]
 - 适用场景：[什么情况下最合适]
 
 **方案 C：[名称]**
+
 - 优点：[列出优点]
 - 缺点：[列出缺点]
 - 适用场景：[什么情况下最合适]
@@ -303,11 +312,13 @@ d) 修复现有问题"
 **一旦理解了要构建什么，开始展示设计。**
 
 **展示原则：**
+
 - 将设计分解为小段（200-300 字）
 - 每段后询问是否正确
 - 准备好在不清楚时回退和澄清
 
 **设计内容覆盖：**
+
 1. 架构概览
 2. 核心组件和职责
 3. 数据流和交互
@@ -347,64 +358,65 @@ d) 修复现有问题"
 **文档结构：**
 
 ```markdown
-# [Feature Name] Design & Implementation Plan
+# [功能名称] 设计与实施计划
 
-**Created:** YYYY-MM-DD
-**Status:** Draft / Approved / Implemented
+**创建时间：** YYYY-MM-DD
+**状态：** 草稿 / 已批准 / 已实施
 
-## Overview
+## 概述
 
 [功能概述和目标]
 
-## Requirements
+## 需求
 
 [需求列表]
 
-## Architecture Design
+## 架构设计
 
 [架构设计]
 
-### Chosen Approach
+### 选择的方案
 
 [选择的方案和原因]
 
-### Alternative Approaches Considered
+### 考虑过的其他方案
 
 [考虑过的其他方案和为什么没选]
 
-## Components
+## 组件
 
 [组件详细设计]
 
-## Data Flow
+## 数据流
 
 [数据流和交互]
 
-## Error Handling
+## 错误处理
 
 [错误处理策略]
 
-## Testing Strategy
+## 测试策略
 
 [测试策略]
 
-## Implementation Tasks
+## 实施任务
 
 [详细的实施任务列表，TDD 格式]
 
-### Task 1: [Component Name]
+### 任务 1：[组件名称]
 
-**Files:**
-- Create: `exact/path/to/file.py`
+**文件：**
 
-**Step 1: Write the failing test**
+- 创建：`exact/path/to/file.py`
+
+**步骤 1：编写失败的测试**
 ...
 
-## Implementation Notes
+## 实施注意事项
 
 [实现注意事项]
 
-## Open Questions
+## 待解决问题
 
 [未解决的问题]
 ```
@@ -433,14 +445,17 @@ d) 修复现有问题"
 你可以选择以下执行方式：
 
 **选项 1：使用 project-workflow 执行**
+
 - 适合：按计划逐步执行，需要人工审查
 - 命令：`/project-workflow` 或告诉我"执行计划 <filename>"
 
 **选项 2：使用 feature-dev 自动执行**
+
 - 适合：复杂功能，需要自动探索和架构设计
 - 命令：`/feature-dev` 或告诉我"使用 feature-dev 实现"
 
 **选项 3：手动执行**
+
 - 适合：你想自己实现，我可以在需要时提供帮助
 - 随时告诉我你需要什么帮助
 
@@ -450,11 +465,13 @@ d) 修复现有问题"
 ### 4.2 与其他 skill 的集成
 
 **与 project-workflow 集成：**
+
 ```
 project-planning 产出计划 → project-workflow 执行计划
 ```
 
 **与 feature-dev 集成：**
+
 ```
 project-planning 产出设计 → feature-dev 自动实现
 ```
@@ -474,24 +491,28 @@ docs/plans/
 ```
 
 **命名规则：**
+
 - 格式：`001-feature-name.md`（3位数字编号 + 功能名称）
 - 编号从 001 开始，递增
 - 功能名称使用小写字母和连字符
 - 文件内包含创建日期元数据
 
 **文件内容根据复杂度：**
+
 - **复杂功能**：包含完整的设计部分（需求、架构、方案对比）+ 详细实施步骤
 - **简单功能**：直接包含实施步骤（TDD 格式）
 
 ### B. 何时使用哪种模式
 
 **使用 Brainstorming 模式：**
+
 - "我想添加一个功能，但不确定怎么做"
 - "帮我设计 XXX 模块"
 - "我有个想法，想和你讨论一下"
 - 需求模糊，需要探索
 
 **使用 Writing Plans 模式：**
+
 - "为 XXX 功能编写实现计划"
 - "我要实现 [具体需求]，帮我写详细步骤"
 - 需求明确，技术方案已定
@@ -500,18 +521,21 @@ docs/plans/
 ### C. 最佳实践
 
 **Brainstorming 模式：**
+
 - 不要急于给出方案，先充分理解需求
 - 总是提供多个方案供选择
 - 使用图表和示例帮助理解
 - 保持对话自然，不要太正式
 
 **Writing Plans 模式：**
+
 - 每个步骤必须可独立执行
 - 提供完整的代码，不要用"添加验证"这种模糊描述
 - 包含精确的命令和预期输出
 - 遵循项目的代码风格和约定
 
 **通用原则：**
+
 - DRY（Don't Repeat Yourself）
 - YAGNI（You Aren't Gonna Need It）
 - TDD（Test-Driven Development）
