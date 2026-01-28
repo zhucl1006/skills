@@ -104,6 +104,8 @@ else:
 
 **文件路径：** `docs/plans/001-feature-name.md`（使用3位数字编号）
 
+**模板文件：** `../_shared/plan-templates/combined-plan-template.md`
+
 **必需的文档头部：**
 
 ```markdown
@@ -339,6 +341,8 @@ d) 修复现有问题"
 ### 3.5 保存设计文档
 
 **文件路径：** `docs/plans/001-feature-name.md`（使用3位数字编号）
+
+**模板文件：** `../_shared/plan-templates/combined-plan-template.md`
 
 **文档结构：**
 
