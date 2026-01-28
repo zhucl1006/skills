@@ -24,7 +24,7 @@ description: |
   - "开始开发" / "执行计划" / "继续上次的任务"
 ---
 
-# Project Workflow
+# 项目工作流
 
 文档驱动的项目开发工作流，确保每次开发任务都有据可循、可追溯。
 
@@ -61,11 +61,11 @@ description: |
 **快速模式**：
 如果只是简单测试，Phase 0 可以创建最小化目录结构，但**不包含文档内容**。
 
-### Code Review Agent
+### 代码审查 Agent
 
-本 skill 使用 **general-purpose** agent 进行代码质量检查和优化。
+本 skill 使用 **通用型** agent 进行代码质量检查和优化。
 
-**Code Review 功能：**
+**代码审查功能：**
 - 代码质量审查（代码规范、最佳实践）
 - Bug 和安全漏洞检测
 - 性能优化建议
@@ -80,7 +80,7 @@ description: |
 ```
 
 **审查流程：**
-1. 调用 general-purpose agent 分析代码变更
+1. 调用通用型 agent 分析代码变更
 2. agent 生成详细的审查报告
 3. 根据报告修复问题
 4. 重新运行审查直到没有重大问题
@@ -91,7 +91,7 @@ description: |
 
 ```
 0. 初始化文档结构 → 1. 读取文档 → 2. 判断任务类型
-   ├─ 指定 plan → 3. 执行已有计划 → Code Review → 修复优化 → 4. 更新文档
+   ├─ 指定 plan → 3. 执行已有计划 → 代码审查 → 修复优化 → 4. 更新文档
    └─ 无 plan → 提示使用 project-planning 创建计划
 ```
 
@@ -276,52 +276,52 @@ else:
 ```
 1. 确认所有任务完成
 2. 运行完整测试套件
-3. 执行 Code Review
+3. 执行代码审查
 4. 修复优化循环
 5. 将计划状态更新为"已完成"
 6. 进入 Phase 4 更新文档
 ```
 
-### 3.5 Code Review 和修复循环
+### 3.5 代码审查和修复循环
 
-使用 general-purpose agent 进行代码质量检查：
+使用通用型 agent 进行代码质量检查：
 
 ```
 循环执行直到没有重大问题：
-  1. 调用 general-purpose agent
+  1. 调用通用型 agent
      使用 Task 工具：
        subagent_type="general-purpose"
        description="Code review for recent changes"
        prompt="
-         Please review the code changes for this feature/task.
+         请审查此功能/任务的代码变更。
 
-         Focus on the following areas:
-         1. Code Quality and Best Practices
-            - Code style and consistency
-            - Adherence to project conventions (check AGENTS.md if exists)
-            - SOLID principles and design patterns
+         重点关注以下方面：
+         1. 代码质量和最佳实践
+            - 代码风格和一致性
+            - 遵循项目约定（检查 AGENTS.md 如果存在）
+            - SOLID 原则和设计模式
 
-         2. Bugs and Security
-            - Potential bugs or edge cases
-            - Security vulnerabilities (SQL injection, XSS, etc.)
-            - Error handling completeness
+         2. Bug 和安全性
+            - 潜在的 Bug 或边界情况
+            - 安全漏洞（SQL 注入、XSS 等）
+            - 错误处理完整性
 
-         3. Performance
-            - Performance bottlenecks
-            - Inefficient algorithms or queries
-            - Memory leaks or resource management issues
+         3. 性能
+            - 性能瓶颈
+            - 低效的算法或查询
+            - 内存泄漏或资源管理问题
 
-         4. Maintainability
-            - Code readability and clarity
-            - Documentation and comments (where needed)
-            - Test coverage
+         4. 可维护性
+            - 代码可读性和清晰度
+            - 文档和注释（必要时）
+            - 测试覆盖率
 
-         Please categorize issues by severity:
-         - BLOCKER: Critical issues that must be fixed (security, serious bugs)
-         - MAJOR: Important issues that should be fixed (performance, code quality)
-         - MINOR: Suggestions for improvement (readability, minor optimizations)
+         请按严重程度分类问题：
+         - 阻塞性：必须修复的关键问题（安全性、严重 Bug）
+         - 重要：应该修复的重要问题（性能、代码质量）
+         - 次要：改进建议（可读性、小优化）
 
-         Provide specific file paths and line numbers for each issue.
+         请为每个问题提供具体的文件路径和行号。
        "
 
   2. 分析审查报告
@@ -340,7 +340,7 @@ else:
      - 运行测试确保修复有效
      - 更新相关文档
 
-  5. 重新运行 code review
+  5. 重新运行代码审查
      - 验证问题已解决
      - 检查是否引入新问题
 
@@ -350,11 +350,11 @@ else:
      - 用户确认可以继续
 ```
 
-**Code Review 原则：**
+**代码审查原则：**
 - 阻塞性问题必须在此阶段解决
 - 重要问题应该尽量解决
 - 建议性优化可以记录到技术债务，后续处理
-- 每次修复后重新运行 code review
+- 每次修复后重新运行代码审查
 - 最多迭代 3-5 轮，避免过度优化
 
 ---
@@ -386,9 +386,9 @@ else:
 | 无 docs/ 目录 | 自动创建文档结构（Phase 0） |
 | 无 docs/plans/ 目录 | 自动创建 docs/plans/ 目录 |
 | 无计划文件 | 提示用户使用 project-planning 创建计划 |
-| code review agent 执行失败 | 检查错误信息，尝试重新执行或跳过 code review |
-| code review 发现阻塞性问题 | 必须修复后才能继续，记录到执行记录 |
-| code review 迭代超过 5 轮 | 与用户讨论，决定是否继续优化或接受当前状态 |
+| 代码审查 agent 执行失败 | 检查错误信息，尝试重新执行或跳过代码审查 |
+| 代码审查发现阻塞性问题 | 必须修复后才能继续，记录到执行记录 |
+| 代码审查迭代超过 5 轮 | 与用户讨论，决定是否继续优化或接受当前状态 |
 | 计划执行中断 | 恢复时读取计划文件，从未完成任务继续 |
 | 任务执行失败 | 记录失败原因到执行记录，询问用户处理方式 |
 | 需求变更 | 更新计划文件，标记原任务状态，添加新任务 |
