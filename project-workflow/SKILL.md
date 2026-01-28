@@ -11,18 +11,34 @@ description: |
   **前置条件：**
   - 项目应该已有 docs/ 文档结构（PRD、SAD 等）
   - 如果是新项目，建议先使用 project-docs-setup skill 创建完整文档
+  - 如果需要制定计划，建议使用 project-planning skill
+
+  **与其他 skill 的关系：**
+  - project-docs-setup：创建项目文档结构
+  - project-planning：制定开发计划（需求澄清 + 设计讨论 + 计划编写）
+  - project-workflow：执行开发计划 + 更新文档
+  - 建议流程：project-docs-setup → project-planning → project-workflow
 
   **触发方式：**
   - "执行 plan 001" / "继续 001-user-authentication"
   - "开始开发" / "执行计划" / "继续上次的任务"
-  - "实现用户认证功能" / "添加 XXX 模块"
 ---
 
 # Project Workflow
 
 文档驱动的项目开发工作流，确保每次开发任务都有据可循、可追溯。
 
-**重要提示**：本 skill 假设项目已有完整的文档结构（docs/README.md、PRD.md、SAD.md 等）。如果是新项目或缺少文档，强烈建议先使用 **project-docs-setup** skill 创建完整文档。
+**重要提示**：本 skill 假设项目已有完整的文档结构（docs/README.md、PRD.md、SAD.md 等）。如果是新项目或缺少文档，强烈建议先使用 **project-docs-setup** skill 创建完整文档。如果需要制定新的开发计划，建议使用 **project-planning** skill。
+
+## 工作流程概览
+
+```
+项目初始化：project-docs-setup（创建文档）
+      ↓
+计划制定：project-planning（需求澄清 + 设计 + 计划）
+      ↓
+执行开发：project-workflow（执行计划 + 更新文档）
+```
 
 ## 前置要求
 
@@ -44,22 +60,6 @@ description: |
 
 **快速模式**：
 如果只是简单测试，Phase 0 可以创建最小化目录结构，但**不包含文档内容**。
-
-### feature-dev 插件
-
-本 skill 依赖 Claude Code 的 **feature-dev** 插件来自动生成和执行新功能的开发计划。
-
-**检查是否已安装：**
-- 运行 `/feature-dev` 命令，如果能正常调用则已安装
-
-**如未安装：**
-- 参考安装文档：https://github.com/anthropics/claude-code/blob/main/plugins/feature-dev/README.md
-- 或者使用简化模式（手动制定计划，skill 会提示）
-
-**feature-dev 提供什么：**
-- 7 阶段的系统化功能开发流程
-- 自动代码探索、架构设计、实现、质量审查
-- 适用于复杂功能、多文件改动、需要架构决策的场景
 
 ### Code Review Agent
 
@@ -91,8 +91,8 @@ description: |
 
 ```
 0. 初始化文档结构 → 1. 读取文档 → 2. 判断任务类型
-   ├─ 指定 plan → 3a. 执行已有计划 → Code Review → 修复优化 → 4. 更新文档
-   └─ 功能描述 → 3b. feature-dev 生成并执行 → Code Review → 修复优化 → 4. 更新文档
+   ├─ 指定 plan → 3. 执行已有计划 → Code Review → 修复优化 → 4. 更新文档
+   └─ 无 plan → 提示使用 project-planning 创建计划
 ```
 
 ---
@@ -205,9 +205,9 @@ echo "注意：目录为空，建议后续使用 project-docs-setup 补充完整
 
 ```
 if 用户指定了 plan 编号 or 有明确的进行中计划:
-    → Phase 3a: 执行已有计划
+    → Phase 3: 执行已有计划
 else:
-    → Phase 3b: 使用 feature-dev 生成并执行计划
+    → 提示用户先使用 project-planning 创建计划
 ```
 
 ### 2.3 使用示例
@@ -218,25 +218,28 @@ else:
 或
 用户："继续 001-user-authentication 的开发"
 
-→ 路由到 Phase 3a，读取并执行该计划
+→ 路由到 Phase 3，读取并执行该计划
 ```
 
-**场景 2：新功能开发**
+**场景 2：没有计划**
 ```
 用户："实现用户认证功能"
 或
 用户："添加 API 速率限制"
 
-→ 路由到 Phase 3b，调用 feature-dev 生成计划并执行
+→ 提示用户先使用 project-planning 创建计划：
+   "请先使用 project-planning skill 创建实施计划。
+    运行方式：/project-planning
+    或告诉我：'帮我规划这个功能'"
 ```
 
 ---
 
-## Phase 3a: 执行已有计划
+## Phase 3: 执行已有计划
 
 当用户指定了具体的 plan 文件时，直接执行该计划。
 
-### 3a.1 读取计划
+### 3.1 读取计划
 
 ```
 1. 根据用户指定的编号定位 plan 文件（如 docs/plans/001-user-authentication.md）
@@ -244,14 +247,14 @@ else:
 3. 检查计划状态（待执行/进行中/已完成）
 ```
 
-### 3a.2 创建任务列表
+### 3.2 创建任务列表
 
 ```
 1. 使用 TodoWrite 将计划中的任务转为 todos
 2. 将计划状态更新为"进行中"
 ```
 
-### 3a.3 逐步执行
+### 3.3 逐步执行
 
 ```
 对于每个任务：
@@ -268,7 +271,7 @@ else:
 - 遵循 TDD：先写测试，再实现
 - 每完成一个任务立即更新计划文件
 
-### 3a.4 完成验证
+### 3.4 完成验证
 
 ```
 1. 确认所有任务完成
@@ -279,7 +282,7 @@ else:
 6. 进入 Phase 4 更新文档
 ```
 
-### 3a.5 Code Review 和修复循环
+### 3.5 Code Review 和修复循环
 
 使用 general-purpose agent 进行代码质量检查：
 
@@ -356,124 +359,6 @@ else:
 
 ---
 
-## Phase 3b: 使用 feature-dev 生成并执行计划
-
-当用户提出新的功能需求时，使用 feature-dev 插件生成计划并执行。
-
-### 3b.1 检查 feature-dev 可用性
-
-尝试调用 feature-dev 插件：
-
-```
-使用 Skill 工具调用：skill="feature-dev", args="{用户需求}"
-```
-
-**如果调用失败（插件不可用）：**
-- 提示用户："feature-dev 插件未安装或不可用"
-- 提供安装指引："请参考 https://github.com/anthropics/claude-code/blob/main/plugins/feature-dev/README.md 安装"
-- 询问用户是否手动制定计划（回退到简化流程）
-
-### 3b.2 调用 feature-dev
-
-使用 Skill 工具调用 feature-dev：
-
-```
-skill="feature-dev", args="{用户的功能需求描述}"
-```
-
-或者简化调用（让 feature-dev 交互式询问）：
-
-```
-skill="feature-dev"
-```
-
-**feature-dev 会自动完成：**
-1. **Discovery** - 明确功能需求
-2. **Codebase Exploration** - 理解相关代码（并行运行 2-3 个 agent）
-3. **Clarifying Questions** - 解决需求歧义
-4. **Architecture Design** - 设计多个实现方案，供用户选择
-5. **Implementation** - 用户批准后实现功能
-6. **Quality Review** - 代码质量检查
-7. **Summary** - 总结完成的工作
-
-### 3b.3 保存计划到 docs/plans/
-
-feature-dev 完成后，将其输出整理成 project-workflow 的计划格式：
-
-```
-1. 确定计划编号：查看 docs/plans/ 目录，使用最大编号 +1
-2. 创建计划文件：docs/plans/{序号}-{功能名}.md
-3. 将 feature-dev 的设计决策和实现步骤写入计划
-4. 标记计划状态为"已完成"（因为 feature-dev 已经实现）
-5. 记录执行日期和主要变更
-```
-
-**计划文件内容包括：**
-- 功能描述（来自 Discovery 阶段）
-- 架构设计（来自 Architecture Design 阶段）
-- 已完成的任务列表（来自 Implementation 阶段）
-- 质量检查结果（来自 Quality Review 阶段）
-- 执行记录（Summary）
-
-### 3b.4 后续步骤
-
-```
-1. 确认 feature-dev 执行成功
-2. 执行 Code Review（补充审查）
-3. 修复优化循环
-4. 将生成的计划保存到 docs/plans/
-5. 进入 Phase 4 更新文档
-```
-
-### 3b.5 补充 Code Review
-
-feature-dev 自带 Quality Review，但可以进行补充审查：
-
-```
-1. 评估 feature-dev 的 Quality Review 结果
-   - 如果 Quality Review 已全面覆盖，可跳过
-   - 如果需要补充审查，继续以下步骤
-
-2. 使用 general-purpose agent 补充审查
-   使用 Task 工具：
-     subagent_type="general-purpose"
-     description="Supplementary code review for feature-dev output"
-     prompt="
-       Review the code implemented by feature-dev, focusing on:
-
-       1. Project-specific conventions (check AGENTS.md)
-          - Naming conventions
-          - Module structure
-          - Error handling patterns
-
-       2. Integration concerns
-          - Compatibility with existing code
-          - API consistency
-          - Database schema compatibility
-
-       3. Missing edge cases
-          - Input validation
-          - Error scenarios
-          - Boundary conditions
-
-       Categorize by severity (BLOCKER/MAJOR/MINOR).
-       Focus on issues that feature-dev's Quality Review might have missed.
-     "
-
-3. 按 Phase 3a.5 的流程执行修复循环
-   - 分析审查报告
-   - 修复阻塞性和重要问题
-   - 重新运行审查
-   - 确认完成
-```
-
-**注意：**
-- feature-dev 的 Quality Review 已经很全面
-- 补充审查主要针对项目特定规范
-- 避免重复审查，浪费时间
-
----
-
 ## Phase 4: 更新文档
 
 任务完成后，更新受影响的文档。
@@ -500,8 +385,7 @@ feature-dev 自带 Quality Review，但可以进行补充审查：
 |------|----------|
 | 无 docs/ 目录 | 自动创建文档结构（Phase 0） |
 | 无 docs/plans/ 目录 | 自动创建 docs/plans/ 目录 |
-| feature-dev 未安装 | 提示安装，或询问用户是否手动制定计划 |
-| feature-dev 执行失败 | 检查错误信息，尝试重新执行或回退到手动模式 |
+| 无计划文件 | 提示用户使用 project-planning 创建计划 |
 | code review agent 执行失败 | 检查错误信息，尝试重新执行或跳过 code review |
 | code review 发现阻塞性问题 | 必须修复后才能继续，记录到执行记录 |
 | code review 迭代超过 5 轮 | 与用户讨论，决定是否继续优化或接受当前状态 |
@@ -524,75 +408,31 @@ docs/plans/
 ```
 
 **命名规则：**
-- 格式：`{三位数字序号}-{功能名称}.md`
-- 序号从 001 开始，递增
+- 格式：`001-feature-name.md`（3位数字编号 + 功能名称）
+- 编号从 001 开始，递增
 - 功能名称使用小写字母和连字符，简洁明确
 
-### feature-dev 计划文件格式
+### 使用 project-planning 制定计划
 
-当使用 feature-dev 生成计划后，保存为以下格式：
+当没有计划文件时，使用 project-planning skill 创建计划：
 
-```markdown
-# {功能名称}
-
-## 状态
-
-- 状态：已完成
-- 创建日期：YYYY-MM-DD
-- 完成日期：YYYY-MM-DD
-
-## 功能描述
-
-{来自 feature-dev Discovery 阶段的需求描述}
-
-## 架构设计
-
-{来自 feature-dev Architecture Design 阶段的设计决策}
-
-### 选择的方案
-
-{用户批准的实现方案}
-
-## 已完成任务
-
-- [x] 任务 1
-- [x] 任务 2
-- [x] 任务 3
-
-{来自 feature-dev Implementation 阶段的实现步骤}
-
-## 质量检查
-
-{来自 feature-dev Quality Review 阶段的审查结果}
-
-## 执行记录
-
-| 日期 | 操作 | 说明 |
-|------|------|------|
-| YYYY-MM-DD | 创建计划 | 使用 feature-dev 生成 |
-| YYYY-MM-DD | 完成实现 | feature-dev 自动执行 |
-| YYYY-MM-DD | 通过测试 | 所有测试通过 |
-
-## 相关文档
-
-- 更新的文档列表
-- 新增的文档列表
+**调用 project-planning：**
+```
+使用 Skill 工具调用：skill="project-planning"
+或告诉用户："/project-planning" 或 "帮我规划这个功能"
 ```
 
-### 手动制定计划（备选方案）
+**project-planning 会自动：**
+1. 判断需求清晰度
+2. 选择合适的模式（Brainstorming 或 Writing Plans）
+3. 产出计划文档（包含设计和实施，根据复杂度决定详细程度）
+4. 保存到 `docs/plans/001-feature-name.md`
 
-如果 feature-dev 不可用，可以手动制定计划：
+**完成后：**
+- 计划文件会保存到 `docs/plans/001-feature-name.md`（使用3位数字编号）
+- 返回 project-workflow，使用 Phase 3 执行该计划
 
-1. 与用户确认需求：
-   - 功能边界：具体要实现什么？
-   - 技术约束：有特殊技术要求吗？
-   - 验收标准：怎样算完成？
-   - 优先级：哪些是必须的，哪些可以后续迭代？
+**详细信息：**
+- 参考 project-planning skill 文档
+- 支持需求澄清、设计讨论、详细计划编写
 
-2. 使用计划模板创建计划文件
-   - **模板位置**：[references/plan-template.md](references/plan-template.md)
-   - **文件路径**：`docs/plans/{序号}-{功能名}.md`
-
-3. 将状态设为"待执行"
-
-4. 按 Phase 3a 的流程执行
