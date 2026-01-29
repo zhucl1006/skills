@@ -108,7 +108,7 @@ else:
 
 **文件路径：** `docs/plans/001-feature-name.md`（使用3位数字编号）
 
-**模板文件：** `../_shared/plan-templates/combined-plan-template.md`
+**模板文件：** `./plan-templates/combined-plan-template.md`
 
 **必需的文档头部：**
 
@@ -353,7 +353,7 @@ d) 修复现有问题"
 
 **文件路径：** `docs/plans/001-feature-name.md`（使用3位数字编号）
 
-**模板文件：** `../_shared/plan-templates/combined-plan-template.md`
+**模板文件：** `./plan-templates/combined-plan-template.md`
 
 **文档结构：**
 

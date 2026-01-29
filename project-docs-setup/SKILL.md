@@ -841,7 +841,7 @@ mkdir -p docs/api
 
 ### 4.2 生成 docs/README.md
 
-使用模板 `../_shared/docs-templates/README-template.md`，填充：
+使用模板 `./docs-templates/README-template.md`，填充：
 
 **模式 A（从需求创建）：**
 - 项目名称
@@ -859,7 +859,7 @@ mkdir -p docs/api
 
 ### 4.3 生成 docs/specs/PRD.md
 
-使用模板 `../_shared/docs-templates/PRD-template.md`，填充：
+使用模板 `./docs-templates/PRD-template.md`，填充：
 
 **模式 A（从需求创建）：**
 - 产品目标和背景（用户提供）
@@ -889,7 +889,7 @@ mkdir -p docs/api
 
 ### 4.4 生成 docs/specs/SAD.md
 
-使用模板 `../_shared/docs-templates/SAD-template.md`，填充：
+使用模板 `./docs-templates/SAD-template.md`，填充：
 
 **模式 A（从需求创建）：**
 - 系统概述（设计方案）
@@ -922,7 +922,7 @@ mkdir -p docs/api
 
 ### 4.5 生成 docs/guides/AI-DEVELOPMENT-GUIDE.md
 
-使用模板 `../_shared/docs-templates/AI-DEVELOPMENT-GUIDE-template.md`，填充：
+使用模板 `./docs-templates/AI-DEVELOPMENT-GUIDE-template.md`，填充：
 
 **模式 A（从需求创建）：**
 - TDD 开发流程

@@ -208,19 +208,18 @@ skills/
 ├── README.md                              # 本文件
 ├── package.json                           # npm 包配置
 ├── .gitignore                             # Git 忽略文件
-├── _shared/                               # 共享资源
-│   ├── docs-templates/                   # 文档模板（project-docs-setup 使用）
-│   │   ├── README-template.md            # 文档索引模板
-│   │   ├── PRD-template.md               # 产品需求文档模板
-│   │   ├── SAD-template.md               # 架构设计文档模板
-│   │   ├── AI-DEVELOPMENT-GUIDE-template.md  # 开发指南模板
-│   │   └── module-template.md            # 模块文档模板
-│   └── plan-templates/                   # 计划模板（project-planning 使用）
-│       └── combined-plan-template.md     # 综合���划模板
 ├── project-docs-setup/                    # 项目文档创建 skill
-│   └── SKILL.md                          # Skill 主文件
+│   ├── SKILL.md                          # Skill 主文件
+│   └── docs-templates/                   # 文档模板
+│       ├── README-template.md            # 文档索引模板
+│       ├── PRD-template.md               # 产品需求文档模板
+│       ├── SAD-template.md               # 架构设计文档模板
+│       ├── AI-DEVELOPMENT-GUIDE-template.md  # 开发指南模板
+│       └── module-template.md            # 模块文档模板
 ├── project-planning/                      # 项目计划制定 skill
-│   └── SKILL.md                          # Skill 主文件
+│   ├── SKILL.md                          # Skill 主文件
+│   └── plan-templates/                   # 计划模板
+│       └── combined-plan-template.md     # 综合计划模板
 └── project-workflow/                      # 项目开发工作流 skill
     └── SKILL.md                          # Skill 主文件
 ```
