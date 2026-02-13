@@ -1,12 +1,12 @@
 ---
 name: project-workflow
 description: |
-  文档驱动的项目开发工作流。智能判断任务类型，执行已有计划或使用 feature-dev 生成新计划。
+  文档驱动的项目开发工作流。智能判断任务类型，执行已有计划或使用 project-planning 生成新计划。
 
   **使用场景：**
   - 已有完整项目文档，需要执行开发任务
   - 用户指定执行某个计划（如"执行 plan 001"）
-  - 用户请求开发新功能（自动使用 feature-dev 生成计划）
+  - 用户请求开发新功能（使用 project-planning 生成计划）
 
   **前置条件：**
   - 项目应该已有 docs/ 文档结构（PRD、SAD 等）
@@ -59,7 +59,7 @@ description: |
 ```
 
 **快速模式**：
-如果只是简单测试，Phase 0 可以创建最小化目录结构，但**不包含文档内容**。
+不提供最小化目录结构创建。如需补全文档结构，请使用 /project-docs-setup。
 
 ### 代码审查 Agent
 
@@ -131,34 +131,11 @@ description: |
    或
    告诉我：'创建项目文档'"
 
-3. 询问用户选择：
-   "你希望如何处理？
-   a) 先创建完整文档（推荐）- 我可以帮你调用 project-docs-setup
-   b) 创建最小化结构继续 - 只创建空目录，无文档内容
-   c) 跳过检查继续执行 - 假设文档在其他位置"
-
-4. 根据用户选择：
-   - 选择 a：调用 project-docs-setup skill 或提示用户运行
-   - 选择 b：执行 0.3 创建最小化结构
-   - 选择 c：跳过 Phase 0，进入 Phase 1
+3. 默认行为：
+   停止执行并引导使用 /project-docs-setup 生成完整文档结构。
 ```
 
-### 0.3 创建最小化结构（仅在用户选择时）
-
-```bash
-# 只创建目录结构，不创建任何文件
-mkdir -p docs/plans
-mkdir -p docs/specs
-mkdir -p docs/guides
-mkdir -p docs/modules
-mkdir -p docs/database
-mkdir -p docs/api
-
-echo "已创建基础目录结构。"
-echo "注意：目录为空，建议后续使用 project-docs-setup 补充完整文档。"
-```
-
-### 0.4 文档已存在
+### 0.3 文档已存在
 
 如果文档结构完整，显示确认信息并跳过此阶段：
 
@@ -270,6 +247,18 @@ else:
 - 遵循项目 AGENTS.md 中的 CONVENTIONS 和 ANTI-PATTERNS
 - 遵循 TDD：先写测试，再实现
 - 每完成一个任务立即更新计划文件
+
+### 3.3.1 子代理任务循环（仅在平台支持子代理时启用）
+
+```
+对每个任务：
+  1. Implementer：实现与测试，自查结果
+  2. Spec Review：验证是否完全匹配计划/规格
+     - 不通过 → 返回 Implementer 修复 → 重新 Spec Review
+  3. Quality Review：工程质量与可维护性检查
+     - 不通过 → 返回 Implementer 修复 → 重新 Quality Review
+  4. 通过两阶段审查后标记任务完成
+```
 
 ### 3.4 完成验证
 
@@ -383,8 +372,8 @@ else:
 
 | 场景 | 处理方式 |
 |------|----------|
-| 无 docs/ 目录 | 自动创建文档结构（Phase 0） |
-| 无 docs/plans/ 目录 | 自动创建 docs/plans/ 目录 |
+| 无 docs/ 目录 | 停止执行并引导 project-docs-setup |
+| 无 docs/plans/ 目录 | 停止执行并引导 project-docs-setup |
 | 无计划文件 | 提示用户使用 project-planning 创建计划 |
 | 代码审查 agent 执行失败 | 检查错误信息，尝试重新执行或跳过代码审查 |
 | 代码审查发现阻塞性问题 | 必须修复后才能继续，记录到执行记录 |
@@ -435,4 +424,3 @@ docs/plans/
 **详细信息：**
 - 参考 project-planning skill 文档
 - 支持需求澄清、设计讨论、详细计划编写
-
